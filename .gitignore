@@ -1,7 +1,7 @@
 node_modules
 .cpcache
 .shadow-cljs
-resources/public/js/main/
+resources/public/js/main/cljs-runtime
 classes/
 .idea/
 minimal-fulcro-app.iml

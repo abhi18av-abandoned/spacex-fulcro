@@ -19,6 +19,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SingleLaunch Component
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; This is the UI part of the component
+(defsc SingleLaunch [this props]
+  {:query         []
+   :initial-state {}}
+  (comp/fragment
+    ()))
+
+(def ui-single-launch (comp/factory SingleLaunch))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; LatestLaunch Component
@@ -34,7 +47,7 @@
    :initial-state {}}
   (dom/button :.ui.button.primary
               {:onClick #(comp/transact! this [(fetch-latest-launch)])}
-              "SpaceX: Latest launch!"))
+              "SpaceX: Fetch latest launch!"))
 
 (def ui-latest-launch (comp/factory LatestLaunch))
 
