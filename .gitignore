@@ -1,0 +1,8 @@
+node_modules
+.cpcache
+.shadow-cljs
+resources/public/js/main/
+classes/
+.idea/
+minimal-fulcro-app.iml
+.rebel_readline_history
