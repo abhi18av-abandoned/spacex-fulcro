@@ -10,7 +10,7 @@
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.dom :as dom]
     [com.fulcrologic.fulcro.algorithms.merge :as merge]
-    [com.fulcrologic.fulcro.mutations :as m :refer [defmutation]]))
+    [com.fulcrologic.fulcro.mutations :as m]))
 
 ;; TODO add workspaces to the project
 
@@ -23,7 +23,7 @@
 ;; SingleLaunch Component
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; This is the UI part of the component
+;; TODO This is the UI part of the component
 (defsc SingleLaunch [this props]
   {:query         []
    :initial-state {}}
@@ -37,7 +37,7 @@
 ;; LatestLaunch Component
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmutation fetch-latest-launch [_]
+(m/defmutation fetch-latest-launch [_]
   (action [{:keys [state]}]
           (spacex-api {} [:spacex/latest-launch])))
 

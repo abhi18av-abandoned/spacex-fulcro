@@ -1,5 +1,6 @@
 (ns app.pathom
-  (:require [clojure.core.async :refer [go timeout <! take!]]
+  (:require [app.utils :as utils :refer [namespaced-keys pull-namespaced]]
+            [clojure.core.async :refer [go timeout <! take!]]
             [clojure.string :as str]
             [com.wsscode.common.async-cljs :refer [go-catch <? let-chan chan? <?maybe <!maybe go-promise]]
             [com.wsscode.pathom.diplomat.http.fetch :as p.http.fetch]
@@ -8,54 +9,6 @@
             [com.wsscode.pathom.connect.graphql :as pcg]
             [com.wsscode.pathom.diplomat.http :as p.http]))
 
-
-(defn adapt-key [k]
-  (str/replace k #"_" "-"))
-
-(defn set-ns
-  "Set the namespace of a keyword"
-  [ns kw]
-  (keyword ns (adapt-key (name kw))))
-
-(defn set-ns-seq
-  "Set the namespace for all keywords in a collection. The collection kind will
-  be preserved."
-  [ns s]
-  (into (empty s) (map #(set-ns ns %)) s))
-
-(defn set-ns-x
-  "Set the namespace of a value. If sequence will use set-ns-seq."
-  [ns x]
-  (if (coll? x)
-    (set-ns-seq ns x)
-    (set-ns ns x)))
-
-(defn namespaced-keys
-  "Set the namespace of all map keys (non recursive)."
-  [e ns]
-  (reduce-kv
-    (fn [x k v]
-      (assoc x (set-ns ns k) v))
-    {}
-    e))
-
-(defn pull-key
-  "Pull some key"
-  [x key]
-  (-> (dissoc x key)
-      (merge (get x key))))
-
-(defn pull-namespaced
-  "Pull some key, updating the namespaces of it"
-  [x key ns]
-  (-> (dissoc x key)
-      (merge (namespaced-keys (get x key) ns))))
-
-
-(defn update-if [m k f & args]
-  (if (contains? m k)
-    (apply update m k f args)
-    m))
 
 (defn adapt-core [core]
   (-> core
@@ -220,7 +173,7 @@
 
 
   (spacex-api {} [{:spacex/upcoming-launches [{:spacex.launch.second-stage/payloads [:spacex.payload/reused]}
-                                                {:spacex.launch.first-stage/cores [:spacex.core/reused]}]}])
+                                              {:spacex.launch.first-stage/cores [:spacex.core/reused]}]}])
 
 
   (spacex-api {} [{:spacex/upcoming-launches [{:spacex.launch.second-stage/payloads [:spacex.payload/reused]}]}])
@@ -293,7 +246,7 @@
                   ::p/placeholder-prefixes #{">"}
                   ::p.http/driver          http-driver}
      ::p/plugins [(pc/connect-plugin {#_#_::pc/register app-registry
-                                      ::pc/indexes  indexes})
+                                      ::pc/indexes indexes})
                   (spacex-plugin)
                   p/error-handler-plugin
                   p/trace-plugin]}))
