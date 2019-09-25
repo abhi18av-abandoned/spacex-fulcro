@@ -1,9 +1,11 @@
 (ns app.client
   (:require
     ;; project libs
+    [app.utils :as utils :refer [clog]]
     [app.pathom :as p :refer [spacex-api]]
 
     ;; external libs
+    [clojure.string :as str]
 
     ;; internal libs
     [com.fulcrologic.fulcro.application :as app]
@@ -39,6 +41,7 @@
 
 (m/defmutation fetch-latest-launch [_]
   (action [{:keys [state]}]
+          (clog {:message "[LatestLaunch] MUTATION fetch-latest-launch" :color "magenta" :props state})
           (spacex-api {} [:spacex/latest-launch])))
 
 
@@ -56,9 +59,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defsc Root [this props]
-  {:query         []
-   :initial-state {}}
-  (js/console.log "Render Root")
+  {:query              []
+   :initial-state      {}
+
+   :initLocalState     (fn [this]
+                         (clog {:message "[Root]: InitLocalState" :color "teal"}))
+   :componentDidMount  (fn [this]
+                         (let [p (comp/props this)]
+                           (clog {:message "[Root] MOUNTED (with TimeStamp)" :props (js/Date.) :color "green"})))
+   :componentDidUpdate (fn [this]
+                         (let [p (comp/props this)]
+                           (clog {:message "[Root]: UPDATED" :color "blue" :props p})))}
   (comp/fragment
     (dom/h1 :.ui.header "Hello, Fulcro!")
     (ui-latest-launch)))
@@ -92,3 +103,4 @@
   (reset! (::app/state-atom APP) {})
 
   (app/current-state APP))
+

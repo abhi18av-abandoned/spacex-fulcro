@@ -1,5 +1,5 @@
 (ns app.pathom
-  (:require [app.utils :as utils :refer [namespaced-keys pull-namespaced]]
+  (:require [app.utils :as utils :refer [namespaced-keys pull-namespaced pull-key update-if]]
             [clojure.core.async :refer [go timeout <! take!]]
             [clojure.string :as str]
             [com.wsscode.common.async-cljs :refer [go-catch <? let-chan chan? <?maybe <!maybe go-promise]]

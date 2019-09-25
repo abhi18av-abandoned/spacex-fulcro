@@ -1,5 +1,6 @@
 (ns app.utils
-  (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc]]))
+  (:require [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
+            [clojure.string :as str]))
 
 
 ;;;;;;;;;;;;;;;;;
