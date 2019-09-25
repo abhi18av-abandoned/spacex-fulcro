@@ -65,7 +65,7 @@
 ;; LaunchFirstStage Component
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsc LaunchFirstStage [this {:keys [] :as props}]
+(defsc LaunchFirstStage [this {:keys [spacex.core/core-serial] :as props}]
   {#_#_:query []
    #_#_:ident []
    :initial-state      {}
@@ -79,8 +79,7 @@
                            (clog {:message "[LaunchFirstStage]: UPDATED" :color "blue" :props p})))}
   (comp/fragment
 
-    (dom/div :.ui.segment "Flight number ")
-    (dom/div :.ui.segment "Video link ")))
+    (dom/div :.ui.segment "Core Serial " core-serial)))
 
 
 (def ui-launch-first-stage (comp/factory LaunchFirstStage {:keyfn :spacex.core/core-serial}))
@@ -133,7 +132,6 @@
   )
 
 (defsc LatestLaunch [this {:keys [spacex.launch/flight-number
-                                  spacex.launch.links/video-link
                                   spacex.launch.first-stage/cores] :as props}]
   {#_#_:query []
    #_#_:ident []
@@ -147,10 +145,9 @@
                          (let [p (comp/props this)]
                            (clog {:message "[LatestLaunch]: UPDATED" :color "blue" :props p})))}
   (comp/fragment
-
-    (dom/div :.ui.segment "Flight number " flight-number)
-    (dom/div :.ui.segment "Video link " video-link)
-    (ui-launch-first-stage cores)))
+    (if flight-number
+      (dom/div :.ui.segment "Flight number " flight-number))
+    (map ui-launch-first-stage cores)))
 
 
 (def ui-latest-launch (comp/factory LatestLaunch {:keyfn :spacex.launch/flight-number}))
