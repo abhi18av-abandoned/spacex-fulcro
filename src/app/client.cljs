@@ -3,7 +3,6 @@
     ;; project libs
     [app.utils :as utils :refer [clog]]
     [app.pathom :as p :refer [spacex-api]]
-    [app.temp-db :refer [latest-launch]]
 
     ;; external libs
     [clojure.string :as str]
@@ -21,168 +20,28 @@
 ;; UTILS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; SingleLaunch Component
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;
-;(defsc SingleLaunch [this props]
-;  {:query              []
-;   :initial-state      {}
-;   :initLocalState     (fn [this]
-;                         (clog {:message "[SingleLaunch]: InitLocalState" :color "teal"}))
-;   :componentDidMount  (fn [this]
-;                         (let [p (comp/props this)]
-;                           (clog {:message "[SingleLaunch] MOUNTED" :props p :color "green"})))
-;   :componentDidUpdate (fn [this]
-;                         (let [p (comp/props this)]
-;                           (clog {:message "[SingleLaunch]: UPDATED" :color "blue" :props p})))}
-;  (comp/fragment
-;    (dom/div :.ui.segment "Single Launch" props)))
-;
-;(def ui-single-launch (comp/factory SingleLaunch))
-;
-;
-;(comment
-;
-;  (reset! latest-launch-data {})
-;
-;  (comp/transact! APP [(update-latest-launch)])
-;
-;  @latest-launch-data
-;
-;  (merge/merge-component! SingleLaunch @latest-launch-data)
-;
-;  (app/schedule-render! APP)
-;
-;  )
-;
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; LaunchFirstStage Component
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defsc LaunchFirstStage [this {:keys [spacex.core/core-serial] :as props}]
-  {#_#_:query []
-   #_#_:ident []
-   :initial-state      {}
-   :initLocalState     (fn [this]
-                         (clog {:message "[LaunchFirstStage]: InitLocalState" :color "teal"}))
-   :componentDidMount  (fn [this]
-                         (let [p (comp/props this)]
-                           (clog {:message "[LaunchFirstStage] MOUNTED" :props p :color "green"})))
-   :componentDidUpdate (fn [this]
-                         (let [p (comp/props this)]
-                           (clog {:message "[LaunchFirstStage]: UPDATED" :color "blue" :props p})))}
-  (comp/fragment
-
-    (dom/div :.ui.segment "Core Serial " core-serial)))
-
-
-(def ui-launch-first-stage (comp/factory LaunchFirstStage {:keyfn :spacex.core/core-serial}))
-
-
-(comment
-
-  (comp/transact! APP [(update-latest-launch)])
-
-  @latest-launch-data
-
-  (reset! latest-launch-data {})
-
-  (reset! (::app/state-atom APP) @latest-launch-data)
-
-  (reset! (::app/state-atom APP) {})
-
-  (app/current-state APP)
-
-  (reset! (::app/state-atom APP) {:one 1})
-
-  (app/schedule-render! APP)
-
-  )
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; LatestLaunch Component
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(m/defmutation fetch-latest-launch [_]
-  (action [{:keys [state]}]
-          (clog {:message "[LatestLaunch] MUTATION fetch-latest-launch" :color "magenta" :props state})
-          (spacex-api {} [:spacex/latest-launch])))
-
-
-(def latest-launch-data (atom {}))
-
-(m/defmutation update-latest-launch [_]
-  (action [{:keys [state]}]
-          (clog {:message "[LatestLaunch] MUTATION update-latest-launch" :color "magenta" :props state})
-          (reset! latest-launch-data latest-launch)))
-
-(comment
-  (comp/transact! APP [(update-latest-launch)])
-  @latest-launch-data
-
-  (app/schedule-render! APP)
-  )
-
-(defsc LatestLaunch [this {:keys [spacex.launch/flight-number
-                                  spacex.launch.first-stage/cores] :as props}]
-  {#_#_:query []
-   #_#_:ident []
-   :initial-state      {}
-   :initLocalState     (fn [this]
-                         (clog {:message "[LatestLaunch]: InitLocalState" :color "teal"}))
-   :componentDidMount  (fn [this]
-                         (let [p (comp/props this)]
-                           (clog {:message "[LatestLaunch] MOUNTED" :props p :color "green"})))
-   :componentDidUpdate (fn [this]
-                         (let [p (comp/props this)]
-                           (clog {:message "[LatestLaunch]: UPDATED" :color "blue" :props p})))}
-  (comp/fragment
-    (if flight-number
-      (dom/div :.ui.segment "Flight number " flight-number))
-    (map ui-launch-first-stage cores)))
-
-
-(def ui-latest-launch (comp/factory LatestLaunch {:keyfn :spacex.launch/flight-number}))
-
-
-(comment
-
-  (comp/transact! APP [(update-latest-launch)])
-
-  @latest-launch-data
-
-  (reset! latest-launch-data {})
-
-  (reset! (::app/state-atom APP) @latest-launch-data)
-
-  (reset! (::app/state-atom APP) {})
-
-  (app/current-state APP)
-
-  (reset! (::app/state-atom APP) {:one 1})
-
-  (app/schedule-render! APP)
-
-  )
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ROOT Component
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsc Root [this {:keys [:spacex/latest-launch] :as props}]
-  {#_#_:query []
-   #_#_:ident []
 
-   :initial-state      {}
+
+
+(defsc Root [this {:keys [:spacex/latest-launch] :as props}]
+  {:query              [:spacex/latest-launch #_{:spacex/latest-launch (comp/get-query LatestLaunch)}]
+   :ident              :spacex/latest-launch
+   :initial-state      {:spacex/latest-launch {:spacex.launch/flight-number      83,
+                                               :spacex.launch.links/wikipedia    "https://en.wikipedia.org/wiki/Spacecom",
+                                               :spacex.launch/ships              ["GOMSTREE"
+                                                                                  "GONAVIGATOR"],
+                                               :spacex.launch.first-stage/cores  [{:spacex.core/reused          true,
+                                                                                   :spacex.core/core-serial     "B1047",
+                                                                                   :spacex.core/landing-vehicle nil}],
+                                               :spacex.launch/launch-date-utc    "2019-08-06T22:52:00.000Z",
+                                               :spacex.rocket/rocket-id          "falcon9",
+                                               :spacex.launch/mission-name       "Amos-17",
+                                               :spacex.launch.second-stage/block 5}}
    :initLocalState     (fn [this]
                          (clog {:message "[Root]: InitLocalState" :color "teal"}))
    :componentDidMount  (fn [this]
@@ -193,10 +52,23 @@
                            (clog {:message "[Root]: UPDATED" :color "blue" :props p})))}
   (comp/fragment
     (dom/h1 :.ui.header "Hello, Fulcro!")
-    (ui-latest-launch latest-launch)))
+    #_(ui-first-stage cores)))
 
 
 (comment
+
+
+  (def init-db {:spacex/latest-launch {:spacex.launch/flight-number      83,
+                                       :spacex.launch.links/wikipedia    "https://en.wikipedia.org/wiki/Spacecom",
+                                       :spacex.launch/ships              ["GOMSTREE"
+                                                                          "GONAVIGATOR"],
+                                       :spacex.launch.first-stage/cores  [{:spacex.core/reused          true,
+                                                                           :spacex.core/core-serial     "B1047",
+                                                                           :spacex.core/landing-vehicle nil}],
+                                       :spacex.launch/launch-date-utc    "2019-08-06T22:52:00.000Z",
+                                       :spacex.rocket/rocket-id          "falcon9",
+                                       :spacex.launch/mission-name       "Amos-17",
+                                       :spacex.launch.second-stage/block 5}})
 
   (comp/transact! APP [(update-latest-launch)])
 
