@@ -30,7 +30,7 @@
 (defsc FirstStageCores [this {:keys [:spacex.core/core-serial] :as props}]
   {:query              [:spacex.core/core-serial]
    :ident              :spacex.core/core-serial
-   :initial-state      {:spacex.core/core-serial "b1047"}
+   #_#_:initial-state {:spacex.core/core-serial "b1047"}
    :initlocalstate     (fn [this]
                          (clog {:message "[FirstStageCores]: initlocalstate" :color "teal"}))
    :componentdidmount  (fn [this]
@@ -80,8 +80,10 @@
 
    :ident              :spacex.launch/flight-number
 
-   :initial-state      {:spacex.launch/flight-number 83
-                        :spacex.launch/mission-name  "Amos-17"}
+   :initial-state      {:spacex.launch/flight-number     83
+                        :spacex.launch/mission-name      "Amos-17"
+                        :spacex.launch.first-stage/cores {:spacex.core/reused      true,
+                                                          :spacex.core/core-serial "b1047"}}
 
    :initlocalstate     (fn [this]
                          (clog {:message "[LatestLaunch]: initlocalstate" :color "teal"}))
@@ -111,12 +113,12 @@
   (app/schedule-render! APP)
 
 
-  (merge/merge-component! APP LatestLaunch {:spacex.launch/flight-number      84,
+  (merge/merge-component! APP LatestLaunch {:spacex.launch/flight-number      83,
                                             :spacex.launch.links/wikipedia    "https://en.wikipedia.org/wiki/spacecom",
                                             :spacex.launch/ships              ["gomstree"
                                                                                "gonavigator"],
                                             :spacex.launch.first-stage/cores  [{:spacex.core/reused          true,
-                                                                                :spacex.core/core-serial     "b1047",
+                                                                                :spacex.core/core-serial     "b1048",
                                                                                 :spacex.core/landing-vehicle nil}],
                                             :spacex.launch/launch-date-utc    "2019-08-06t22:52:00.000z",
                                             :spacex.rocket/rocket-id          "Falcon9",
