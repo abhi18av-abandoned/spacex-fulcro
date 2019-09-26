@@ -3,11 +3,11 @@
             [clojure.core.async :refer [go timeout <! take!]]
             [clojure.string :as str]
             [com.wsscode.common.async-cljs :refer [go-catch <? let-chan chan? <?maybe <!maybe go-promise]]
-            [com.wsscode.pathom.diplomat.http.fetch :as p.http.fetch]
+            [com.wsscode.pathom.diplomat.http.fetch :as http.fetch]
             [com.wsscode.pathom.core :as p]
             [com.wsscode.pathom.connect :as pc]
             [com.wsscode.pathom.connect.graphql :as pcg]
-            [com.wsscode.pathom.diplomat.http :as p.http]))
+            [com.wsscode.pathom.diplomat.http :as http]))
 
 
 (defn adapt-core [core]
@@ -125,9 +125,9 @@
   [env _]
   {::pc/output [{:spacex/all-launches launch-out}]}
   (go-catch
-    (->> (p.http/request env "https://api.spacexdata.com/v3/launches"
-                         {::p.http/accept ::p.http/json}) <?maybe
-         ::p.http/body
+    (->> (http/request env "https://api.spacexdata.com/v3/launches"
+                         {::http/accept ::http/json}) <?maybe
+         ::http/body
          (mapv adapt-launch)
          (hash-map :spacex/all-launches))))
 
@@ -143,9 +143,9 @@
   [env _]
   {::pc/output [{:spacex/past-launches launch-out}]}
   (go-catch
-    (->> (p.http/request env "https://api.spacexdata.com/v3/launches/past?limit=10"
-                         {::p.http/accept ::p.http/json}) <?maybe
-         ::p.http/body
+    (->> (http/request env "https://api.spacexdata.com/v3/launches/past?limit=10"
+                         {::http/accept ::http/json}) <?maybe
+         ::http/body
          (mapv adapt-launch)
          (hash-map :spacex/past-launches))))
 
@@ -161,9 +161,9 @@
   [env _]
   {::pc/output [{:spacex/upcoming-launches launch-out}]}
   (go-catch
-    (->> (p.http/request env "https://api.spacexdata.com/v3/launches/upcoming"
-                         {::p.http/accept ::p.http/json}) <?maybe
-         ::p.http/body
+    (->> (http/request env "https://api.spacexdata.com/v3/launches/upcoming"
+                         {::http/accept ::http/json}) <?maybe
+         ::http/body
          (mapv adapt-launch)
          (hash-map :spacex/upcoming-launches))))
 
@@ -187,9 +187,9 @@
    ::pc/output    launch-out
    ::pc/transform (pc/transform-auto-batch 10)}
   (go-catch
-    (->> (p.http/request env (str "https://api.spacexdata.com/v3/launches/" flight-number)
-                         {::p.http/accept ::p.http/json}) <?maybe
-         ::p.http/body
+    (->> (http/request env (str "https://api.spacexdata.com/v3/launches/" flight-number)
+                         {::http/accept ::http/json}) <?maybe
+         ::http/body
          adapt-launch)))
 
 (comment
@@ -203,9 +203,9 @@
   [env _]
   {::pc/output [{:spacex/latest-launch launch-out}]}
   (go-catch
-    (->> (p.http/request env "https://api.spacexdata.com/v3/launches/latest"
-                         {::p.http/accept ::p.http/json}) <?maybe
-         ::p.http/body
+    (->> (http/request env "https://api.spacexdata.com/v3/launches/latest"
+                         {::http/accept ::http/json}) <?maybe
+         ::http/body
          adapt-launch
          (hash-map :spacex/latest-launch))))
 
@@ -228,7 +228,7 @@
   {::pc/register resolvers})
 
 
-(def http-driver p.http.fetch/request-async)
+(def http-driver http.fetch/request-async)
 
 
 (def app-registry
@@ -244,7 +244,7 @@
                                             pc/open-ident-reader
                                             p/env-placeholder-reader]
                   ::p/placeholder-prefixes #{">"}
-                  ::p.http/driver          http-driver}
+                  ::http/driver          http-driver}
      ::p/plugins [(pc/connect-plugin {#_#_::pc/register app-registry
                                       ::pc/indexes indexes})
                   (spacex-plugin)
