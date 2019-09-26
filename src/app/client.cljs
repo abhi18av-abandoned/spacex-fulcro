@@ -22,6 +22,47 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; LatestLaunch Component
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+(defsc LatestLaunch [this {:keys [:spacex.launch/flight-number] :as props}]
+  {:query              [:spacex.launch/flight-number]
+   #_#_:ident :spacex/flight-number
+   #_#_:initial-state {:spacex/latest-launch {:spacex.launch/flight-number      83,
+                                              :spacex.launch.links/wikipedia    "https://en.wikipedia.org/wiki/spacecom",
+                                              :spacex.launch/ships              ["gomstree"
+                                                                                 "gonavigator"],
+                                              :spacex.launch.first-stage/cores  [{:spacex.core/reused          true,
+                                                                                  :spacex.core/core-serial     "b1047",
+                                                                                  :spacex.core/landing-vehicle nil}],
+                                              :spacex.launch/launch-date-utc    "2019-08-06t22:52:00.000z",
+                                              :spacex.rocket/rocket-id          "falcon9",
+                                              :spacex.launch/mission-name       "amos-17",
+                                              :spacex.launch.second-stage/block 5}}
+   :initlocalstate     (fn [this]
+                         (clog {:message "[LatestLaunch]: initlocalstate" :color "teal"}))
+   :componentdidmount  (fn [this]
+                         (let [p (comp/props this)]
+                           (clog {:message "[LatestLaunch] MOUNTED (with timestamp)" :props p :color "green"})))
+   :componentdidupdate (fn [this]
+                         (let [p (comp/props this)]
+                           (clog {:message "[LatestLaunch]: UPDATED" :color "blue" :props p})))}
+  (comp/fragment
+    (dom/div "Flight number: " flight-number)))
+
+
+(def ui-latest-launch (comp/factory LatestLaunch))
+
+(comment
+
+  (comp/get-query LatestLaunch)
+
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ROOT Component
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -29,33 +70,36 @@
 
 
 (defsc Root [this {:keys [:spacex/latest-launch] :as props}]
-  {:query              [:spacex/latest-launch #_{:spacex/latest-launch (comp/get-query LatestLaunch)}]
+  {:query              [:spacex/latest-launch #_{:spacex/latest-launch (comp/get-query latestlaunch)}]
    :ident              :spacex/latest-launch
    :initial-state      {:spacex/latest-launch {:spacex.launch/flight-number      83,
-                                               :spacex.launch.links/wikipedia    "https://en.wikipedia.org/wiki/Spacecom",
-                                               :spacex.launch/ships              ["GOMSTREE"
-                                                                                  "GONAVIGATOR"],
+                                               :spacex.launch.links/wikipedia    "https://en.wikipedia.org/wiki/spacecom",
+                                               :spacex.launch/ships              ["gomstree"
+                                                                                  "gonavigator"],
                                                :spacex.launch.first-stage/cores  [{:spacex.core/reused          true,
-                                                                                   :spacex.core/core-serial     "B1047",
+                                                                                   :spacex.core/core-serial     "b1047",
                                                                                    :spacex.core/landing-vehicle nil}],
-                                               :spacex.launch/launch-date-utc    "2019-08-06T22:52:00.000Z",
+                                               :spacex.launch/launch-date-utc    "2019-08-06t22:52:00.000z",
                                                :spacex.rocket/rocket-id          "falcon9",
-                                               :spacex.launch/mission-name       "Amos-17",
+                                               :spacex.launch/mission-name       "amos-17",
                                                :spacex.launch.second-stage/block 5}}
-   :initLocalState     (fn [this]
-                         (clog {:message "[Root]: InitLocalState" :color "teal"}))
-   :componentDidMount  (fn [this]
+   :initlocalstate     (fn [this]
+                         (clog {:message "[root]: initlocalstate" :color "teal"}))
+   :componentdidmount  (fn [this]
                          (let [p (comp/props this)]
-                           (clog {:message "[Root] MOUNTED (with TimeStamp)" :props (js/Date.) :color "green"})))
-   :componentDidUpdate (fn [this]
+                           (clog {:message "[root] mounted (with timestamp)" :props (js/date.) :color "green"})))
+   :componentdidupdate (fn [this]
                          (let [p (comp/props this)]
-                           (clog {:message "[Root]: UPDATED" :color "blue" :props p})))}
+                           (clog {:message "[root]: updated" :color "blue" :props p})))}
   (comp/fragment
     (dom/h1 :.ui.header "Hello, Fulcro!")
-    #_(ui-first-stage cores)))
+    (ui-latest-launch latest-launch)))
 
 
 (comment
+
+
+  (comp/get-query Root)
 
 
   (def init-db {:spacex/latest-launch {:spacex.launch/flight-number      83,
