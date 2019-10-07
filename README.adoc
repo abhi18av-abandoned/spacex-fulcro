@@ -1,0 +1,9 @@
+= spacex-fulcro
+
+This project has the following features
+
+- Purely a frontend app
+- `Pathom` parser for a portion of the `spacex` api
+- `Fulcro3` best practices
+
+This is meant to be deployed on the `github-pages` with the `dev build` so you can explore using the `fulcro-inspect` tool.
