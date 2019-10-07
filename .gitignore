@@ -5,4 +5,4 @@ classes/
 .idea/
 minimal-fulcro-app.iml
 .rebel_readline_history
-resources/public/js/main/
+resources/public/js/
