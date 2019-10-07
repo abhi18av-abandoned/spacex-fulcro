@@ -218,6 +218,8 @@
 
   (spacex-api {} [{:spacex/latest-launch [:spacex.launch/mission-name]}])
 
+  (spacex-api {} [{:spacex/latest-launch [{:spacex.launch.second-stage/payloads [:spacex.payload/payload-id]}]}])
+
   )
 
 
@@ -254,7 +256,7 @@
 
 
 
-(defn spacex-api [entity query]
+(defn pathom-api [entity query]
   (take! (parser {::p/entity (atom entity)} query) prn))
 
 
