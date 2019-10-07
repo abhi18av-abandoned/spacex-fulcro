@@ -79,7 +79,13 @@
       (merge (namespaced-keys (get x key) ns))))
 
 
-(defn update-if [m k f & args]
+(defn update-if
+  "Conditionally updates the namespace of the keys which are nested
+  ```clj
+  (update-if :key-in-response-map #(mapv adapt-key-in-response-map %))
+  ```
+  "
+  [m k f & args]
   (if (contains? m k)
     (apply update m k f args)
     m))
