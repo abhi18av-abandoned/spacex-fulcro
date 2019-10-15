@@ -55,7 +55,11 @@
 
 (def ui-first-component (comp/factory FirstComponent))
 
+(comment
 
+  (pathom-api [:spacex/latest-launchk])
+
+  '())
 
 
 
