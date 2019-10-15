@@ -22,67 +22,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; FirstComponent Component
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-#_(m/defmutation update-temp-db [_]
-  (action [{:keys [state]}]
-          (clog {:message "[LatestLaunch] MUTATION update-temp-db" :color "magenta" :props state})
-          (df/load! this)))
-
-
-(comment
-
-  (df/load! APP :latest-launch LatestLaunch)
-
-  (pathom-api {} [:spacex/latest-launch])
-
-  (pathom-api {} [{:spacex/latest-launch [:spacex.launch/mission-name]}])
-
-  '())
-
-
-
-
-(defsc LatestLaunch [this props]
-  {:query              [:latest-launch]
-   :ident              :latest-launch
-   :initial-state      {}
-   :initLocalState     (fn [this]
-                         (clog {:message "[FirstComponent]: InitLocalState" :color "teal"}))
-   :componentDidMount  (fn [this]
-                         (let [p (comp/props this)]
-                           (clog {:message "[FirstComponent] MOUNTED" :props p :color "green"})))
-   :componentDidUpdate (fn [this]
-                         (let [p (comp/props this)]
-                           (clog {:message "[FirstComponent]: UPDATED" :color "blue" :props p})))}
-  (comp/fragment
-    (dom/button :.ui.button.primary
-                {:onClick (fn []
-                            (df/load! this (comp/get-ident this) LatestLaunch))}
-                "Fetch latest launch")))
-
-
-(def ui-latest-launch (comp/factory LatestLaunch {:keyfn :latest-launch}))
-
-
-(comment
-
-  (comp/get-query LatestLaunch)
-
-  '())
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ROOT Component
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defsc Root [this props]
-  {:query              [:root (comp/get-query LatestLaunch)]
+  {:query              [:spacex/latest-launch]
    :initial-state      {}
    :initLocalState     (fn [this]
                          (clog {:message "[Root]: InitLocalState" :color "teal"}))
@@ -94,12 +39,23 @@
                            (clog {:message "[Root]: UPDATED" :color "blue" :props p})))}
   (comp/fragment
     (dom/h1 :.ui.header "SpaceX - Fulcro Project")
-    (ui-latest-launch props)))
+    (dom/button :.ui.button.primary
+                {:onClick (fn []
+                            (pathom-api {} [:spacex/latest-launch]))}
+                "Fetch latest launch")
+    (dom/div :.ui.segment "Mission Name")))
 
 
 (comment
 
   (comp/get-query Root)
+
+  (df/load! APP :spacex/latest-launch LatestLaunch {:target :root})
+
+  (pathom-api {} [:spacex/latest-launch])
+
+  (pathom-api {} [{:spacex/latest-launch [:spacex.launch/mission-name]}])
+
 
   '())
 
