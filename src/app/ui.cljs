@@ -13,7 +13,8 @@
     [com.fulcrologic.fulcro.components :as comp :refer [defsc]]
     [com.fulcrologic.fulcro.dom :as dom]
     [com.fulcrologic.fulcro.algorithms.merge :as merge]
-    [com.fulcrologic.fulcro.mutations :as m]))
+    [com.fulcrologic.fulcro.mutations :as m]
+    [com.fulcrologic.fulcro.data-fetch :as df]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -28,18 +29,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(def temp-db-data (atom {}))
-
-(m/defmutation update-temp-db [_]
+#_(m/defmutation update-temp-db [_]
   (action [{:keys [state]}]
-          (clog {:message "[FirstComponent] MUTATION update-temp-db" :color "magenta" :props state})
-          (reset! temp-db-data all-launches)))
+          (clog {:message "[LatestLaunch] MUTATION update-temp-db" :color "magenta" :props state})
+          (df/load! this)))
+
+
+(comment
+
+  (df/load! APP :latest-launch LatestLaunch)
+
+  (pathom-api {} [:spacex/latest-launch])
+
+  (pathom-api {} [{:spacex/latest-launch [:spacex.launch/mission-name]}])
+
+  '())
 
 
 
-(defsc FirstComponent [this props]
-  {#_#_:query []
-   #_#_:ident []
+
+(defsc LatestLaunch [this props]
+  {:query              [:latest-launch]
+   :ident              :latest-launch
    :initial-state      {}
    :initLocalState     (fn [this]
                          (clog {:message "[FirstComponent]: InitLocalState" :color "teal"}))
@@ -50,17 +61,20 @@
                          (let [p (comp/props this)]
                            (clog {:message "[FirstComponent]: UPDATED" :color "blue" :props p})))}
   (comp/fragment
-    (dom/div)))
+    (dom/button :.ui.button.primary
+                {:onClick (fn []
+                            (df/load! this (comp/get-ident this) LatestLaunch))}
+                "Fetch latest launch")))
 
 
-(def ui-first-component (comp/factory FirstComponent))
+(def ui-latest-launch (comp/factory LatestLaunch {:keyfn :latest-launch}))
+
 
 (comment
 
-  (pathom-api [:spacex/latest-launchk])
+  (comp/get-query LatestLaunch)
 
   '())
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -68,9 +82,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defsc Root [this props]
-  {#_#_:query []
-   #_#_:ident []
-
+  {:query              [:root (comp/get-query LatestLaunch)]
    :initial-state      {}
    :initLocalState     (fn [this]
                          (clog {:message "[Root]: InitLocalState" :color "teal"}))
@@ -81,9 +93,15 @@
                          (let [p (comp/props this)]
                            (clog {:message "[Root]: UPDATED" :color "blue" :props p})))}
   (comp/fragment
-    (dom/h1 :.ui.header "Hello, Fulcro!")
-    (ui-first-component props)))
+    (dom/h1 :.ui.header "SpaceX - Fulcro Project")
+    (ui-latest-launch props)))
 
+
+(comment
+
+  (comp/get-query Root)
+
+  '())
 
 
 
