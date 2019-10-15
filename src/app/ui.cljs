@@ -27,7 +27,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defsc Root [this props]
-  {:query              [:spacex/latest-launch]
+  {:query              [{:spacex/latest-launch [:spacex.launch/mission-name]}]
    :initial-state      {}
    :initLocalState     (fn [this]
                          (clog {:message "[Root]: InitLocalState" :color "teal"}))
@@ -41,7 +41,11 @@
     (dom/h1 :.ui.header "SpaceX - Fulcro Project")
     (dom/button :.ui.button.primary
                 {:onClick (fn []
-                            (pathom-api {} [:spacex/latest-launch]))}
+
+                            (df/load! this (comp/get-ident this)
+                                      Root
+                                      {:target [:spacex/latest-launch]})
+                            #_(pathom-api {} [:spacex/latest-launch]))}
                 "Fetch latest launch")
     (dom/div :.ui.segment "Mission Name")))
 
@@ -50,7 +54,7 @@
 
   (comp/get-query Root)
 
-  (df/load! APP :spacex/latest-launch LatestLaunch {:target :root})
+  (df/load! app.application/APP :spacex/latest-launch Root {:target [:spacex/latest-launch]})
 
   (pathom-api {} [:spacex/latest-launch])
 
