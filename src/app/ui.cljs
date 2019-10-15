@@ -4,7 +4,7 @@
     ;[app.secrets :as secrets]
     [app.utils :as utils :refer [clog]]
     [app.pathom :as p :refer [pathom-api]]
-    [app.temp-db :refer [all-launches]]
+    [app.temp-db :refer [latest-launch-data]]
 
     ;; external libs
     [clojure.string :as str]
@@ -40,7 +40,7 @@
   (comp/fragment
     (dom/h1 :.ui.header "SpaceX - Fulcro Project")
     (dom/button :.ui.button.primary
-                {:onClick (fn []
+                #_{:onClick (fn []
 
                             (df/load! this (comp/get-ident this)
                                       Root
@@ -51,6 +51,12 @@
 
 
 (comment
+
+
+
+
+
+
 
   (comp/get-query Root)
 
