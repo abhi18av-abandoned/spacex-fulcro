@@ -133,9 +133,9 @@
 
 
 (comment
-  (spacex-api {} [:spacex/all-launches])
+  (pathom-api {} [:spacex/all-launches])
 
-  (spacex-api {} [{:spacex/all-launches [:spacex.launch/flight-number]}])
+  (pathom-api {} [{:spacex/all-launches [:spacex.launch/flight-number]}])
   )
 
 
@@ -151,9 +151,9 @@
 
 (comment
 
-  (spacex-api {} [{:spacex/past-launches [:spacex.launch/mission-name]}])
+  (pathom-api {} [{:spacex/past-launches [:spacex.launch/mission-name]}])
 
-  (spacex-api {} [{:spacex/past-launches [:spacex.launch/mission-name :spacex.launch.links/video-link]}])
+  (pathom-api {} [{:spacex/past-launches [:spacex.launch/mission-name :spacex.launch.links/video-link]}])
   )
 
 
@@ -169,14 +169,14 @@
 
 
 (comment
-  (spacex-api {} [{:spacex/upcoming-launches [:spacex.launch/mission-name]}])
+  (pathom-api {} [{:spacex/upcoming-launches [:spacex.launch/mission-name]}])
 
 
-  (spacex-api {} [{:spacex/upcoming-launches [{:spacex.launch.second-stage/payloads [:spacex.payload/reused]}
+  (pathom-api {} [{:spacex/upcoming-launches [{:spacex.launch.second-stage/payloads [:spacex.payload/reused]}
                                               {:spacex.launch.first-stage/cores [:spacex.core/reused]}]}])
 
 
-  (spacex-api {} [{:spacex/upcoming-launches [{:spacex.launch.second-stage/payloads [:spacex.payload/reused]}]}])
+  (pathom-api {} [{:spacex/upcoming-launches [{:spacex.launch.second-stage/payloads [:spacex.payload/reused]}]}])
 
   )
 
@@ -194,7 +194,7 @@
 
 (comment
 
-  (spacex-api {} [{[:spacex.launch/flight-number 18] [:spacex.launch.links/wikipedia]}])
+  (pathom-api {} [{[:spacex.launch/flight-number 18] [:spacex.launch.links/wikipedia]}])
 
   )
 
@@ -212,13 +212,13 @@
 
 (comment
 
-  (spacex-api {} [:spacex/latest-launch])
+  (pathom-api {} [:spacex/latest-launch])
 
-  (spacex-api {} [{:spacex/latest-launch [:spacex/all-launches]}])
+  (pathom-api {} [{:spacex/latest-launch [:spacex/all-launches]}])
 
-  (spacex-api {} [{:spacex/latest-launch [:spacex.launch/mission-name]}])
+  (pathom-api {} [{:spacex/latest-launch [:spacex.launch/mission-name]}])
 
-  (spacex-api {} [{:spacex/latest-launch [{:spacex.launch.second-stage/payloads [:spacex.payload/payload-id]}]}])
+  (pathom-api {} [{:spacex/latest-launch [{:spacex.launch.second-stage/payloads [:spacex.payload/payload-id]}]}])
 
   )
 
